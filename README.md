@@ -1,3 +1,3 @@
 # TweetyText
 
-Convert Project Gutenberg ebooks to a Tweet-able format.
+Convert Project Gutenberg e-books into a Tweet-able format.
