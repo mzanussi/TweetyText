@@ -10,6 +10,8 @@ namespace TweetyText
 {
     class Program
     {
+        // Given a line of characters, returns an ArrayList breaking 
+        // down the line into a series of lines <= 140 characters.
         private void ChunkIt(string line, ArrayList lines)
         {
             if (line.Length <= 140)
@@ -21,8 +23,12 @@ namespace TweetyText
                 int ptr = 140 - "...".Length - 1;
                 while (line[ptr] != ' ')
                 {
-                    --ptr;
+                    ptr--;
                 }
+                string str = line.Substring(0, ptr);
+                str = str.TrimEnd() + "...";
+                lines.Add(str);
+                ChunkIt(line.Substring(ptr + 1), lines);
             }
         }
 
