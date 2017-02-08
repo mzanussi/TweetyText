@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,22 @@ namespace TweetyText
 {
     class Program
     {
+        private void ChunkIt(string line, ArrayList lines)
+        {
+            if (line.Length <= 140)
+            {
+                lines.Add(line);
+            }
+            else
+            {
+                int ptr = 140 - "...".Length - 1;
+                while (line[ptr] != ' ')
+                {
+                    --ptr;
+                }
+            }
+        }
+
         public void Process(string filename)
         {
             bool isDone = false;
@@ -49,9 +66,16 @@ namespace TweetyText
                         // otherwise, break up line into <= 140 char chunks.
                         if (cur_line.Length <= 140)
                         {
+                            Console.WriteLine(cur_line);
                         }
                         else
                         {
+                            ArrayList lines = new ArrayList();
+                            ChunkIt(cur_line, lines);
+                            foreach (string line in lines)
+                            {
+                                Console.WriteLine(line);
+                            }
                         }
                     }
 
