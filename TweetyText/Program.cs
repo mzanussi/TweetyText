@@ -9,20 +9,14 @@ namespace TweetyText
 {
     class Program
     {
-        static void Main(string[] args)
+        public void Process(string filename)
         {
-            //foreach (string line in File.ReadLines(@"C:\Temp\Data\mands.txt"))
-            //{
-            //    string cline = "";
-            //}
-            string filename = @"C:\Temp\Data\mands.txt";
-
             bool isDone = false;
 
             using (StreamReader sr = new StreamReader(filename))
             {
-                while (!isDone) {
-
+                while (!isDone)
+                {
                     string cur_line = "";
 
                     // Read in text until end of paragraph has been reached
@@ -45,7 +39,6 @@ namespace TweetyText
                             isDone = true;
                             break;
                         }
-
                     }
 
                     if (cur_line.Length > 0)
@@ -66,6 +59,12 @@ namespace TweetyText
 
             }
 
+        }
+
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+            p.Process(@"C:\Temp\Data\mands.txt");
         }
     }
 }
