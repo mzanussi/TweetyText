@@ -35,6 +35,7 @@ namespace TweetyText
         public void Process(string filename)
         {
             bool isDone = false;
+            int line_count = 0;
 
             using (StreamReader sr = new StreamReader(filename))
             {
@@ -72,7 +73,8 @@ namespace TweetyText
                         // otherwise, break up line into <= 140 char chunks.
                         if (cur_line.Length <= 140)
                         {
-                            Console.WriteLine(cur_line);
+                            line_count++;
+                            Console.WriteLine("{0}: {1}", line_count, cur_line);
                         }
                         else
                         {
@@ -80,7 +82,8 @@ namespace TweetyText
                             ChunkIt(cur_line, lines);
                             foreach (string line in lines)
                             {
-                                Console.WriteLine(line);
+                                line_count++;
+                                Console.WriteLine("{0}: {1}", line_count, line);
                             }
                         }
                     }
