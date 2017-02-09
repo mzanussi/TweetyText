@@ -10,23 +10,26 @@ namespace TweetyText
 {
     class Program
     {
+        private const int TWEET_LEN = 140;
+        private const string CONTINUED = "...";
+
         // Given a line of characters, returns an ArrayList breaking 
         // down the line into a series of lines <= 140 characters.
         private void ChunkIt(string line, ArrayList lines)
         {
-            if (line.Length <= 140)
+            if (line.Length <= TWEET_LEN)
             {
                 lines.Add(line);
             }
             else
             {
-                int ptr = 140 - "...".Length - 1;
+                int ptr = TWEET_LEN - CONTINUED.Length - 1;
                 while (line[ptr] != ' ')
                 {
                     ptr--;
                 }
                 string str = line.Substring(0, ptr);
-                str = str.TrimEnd() + "...";
+                str = str.TrimEnd() + CONTINUED;
                 lines.Add(str);
                 ChunkIt(line.Substring(ptr + 1), lines);
             }
@@ -71,7 +74,7 @@ namespace TweetyText
                         cur_line = cur_line.TrimEnd();
                         // if line is <= 140 characters just output the line
                         // otherwise, break up line into <= 140 char chunks.
-                        if (cur_line.Length <= 140)
+                        if (cur_line.Length <= TWEET_LEN)
                         {
                             line_count++;
                             Console.WriteLine("{0}: {1}", line_count, cur_line);
@@ -97,7 +100,7 @@ namespace TweetyText
         static void Main(string[] args)
         {
             Program p = new Program();
-            p.Process(@"C:\Temp\Data\mands.txt");
+            p.Process(@"C:\Temp\Data\handbook.txt");
         }
     }
 }
