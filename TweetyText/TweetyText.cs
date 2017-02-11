@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TweetyText
 {
-    class Program
+    class TweetyText
     {
         private const int TWEET_LEN = 140;
         private const string CONTINUED = "...";
@@ -35,8 +35,10 @@ namespace TweetyText
             }
         }
 
-        public void Process(string filename)
+        public ArrayList Process(string filename)
         {
+            ArrayList file = new ArrayList();
+
             bool isDone = false;
             int line_count = 0;
 
@@ -77,7 +79,7 @@ namespace TweetyText
                         if (cur_line.Length <= TWEET_LEN)
                         {
                             line_count++;
-                            Console.WriteLine("{0}: {1}", line_count, cur_line);
+                            file.Add(cur_line);
                         }
                         else
                         {
@@ -86,7 +88,7 @@ namespace TweetyText
                             foreach (string line in lines)
                             {
                                 line_count++;
-                                Console.WriteLine("{0}: {1}", line_count, line);
+                                file.Add(line);
                             }
                         }
                     }
@@ -95,12 +97,18 @@ namespace TweetyText
 
             }
 
+            return file;
+
         }
 
         static void Main(string[] args)
         {
-            Program p = new Program();
-            p.Process(@"C:\Temp\Data\handbook.txt");
+            TweetyText p = new TweetyText();
+            ArrayList lines = p.Process(@"C:\Temp\Data\handbook.txt");
+            foreach (string line in lines)
+            {
+                Console.WriteLine("{0}", line);
+            }
         }
     }
 }
