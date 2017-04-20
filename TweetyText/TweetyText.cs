@@ -12,38 +12,64 @@ namespace TweetyText
     {
         private const int TWEET_LEN = 140;
         private const string CONTINUED = "...";
+        private string kHashtag;
 
-        // Given a line of characters, returns an ArrayList breaking 
-        // down the line into a series of lines <= 140 characters.
+        /// <summary>
+        /// Given a line of characters, returns an ArrayList breaking down the
+        /// line into a series of lines less than are equal to 140 characters.
+        /// </summary>
         private void ChunkIt(string line, ArrayList lines)
         {
-            if (line.Length <= TWEET_LEN)
+            if (line.Length + 1 + kHashtag.Length <= TWEET_LEN)
             {
-                lines.Add(line);
+                lines.Add(line + " " + kHashtag);
             }
             else
             {
-                int ptr = TWEET_LEN - CONTINUED.Length - 1;
+                int ptr = TWEET_LEN - CONTINUED.Length - kHashtag.Length - 1;
                 while (line[ptr] != ' ')
                 {
                     ptr--;
                 }
                 string str = line.Substring(0, ptr);
-                str = str.TrimEnd() + CONTINUED;
+                str = str.TrimEnd() + CONTINUED + " " + kHashtag;
                 lines.Add(str);
                 ChunkIt(line.Substring(ptr + 1), lines);
             }
         }
 
-        public ArrayList Process(string filename)
+        /// <summary>
+        /// Give it a Gutenberg text file and get back a 
+        /// string array of Tweetable strings.
+        /// </summary>
+        public string[] Tweetify(string filename)
         {
-            ArrayList file = new ArrayList();
+            ArrayList contents = new ArrayList();
 
             bool isDone = false;
             int line_count = 0;
 
             using (StreamReader sr = new StreamReader(filename))
             {
+                // First line of file is a hashtag name for file.
+                // Stop if no hashtag was found.
+                if (sr.Peek() >= 0)
+                {
+                    string line = sr.ReadLine();
+                    if (line[0] != '#')
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        kHashtag = line;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+
                 while (!isDone)
                 {
                     string cur_line = "";
@@ -56,6 +82,7 @@ namespace TweetyText
                         if (sr.Peek() >= 0)
                         {
                             string line = sr.ReadLine();
+
                             if (string.IsNullOrEmpty(line))
                             {
                                 break;
@@ -72,14 +99,15 @@ namespace TweetyText
 
                     if (cur_line.Length > 0)
                     {
-                        // trim first
+                        // Trim line first.
                         cur_line = cur_line.TrimEnd();
-                        // if line is <= 140 characters just output the line
-                        // otherwise, break up line into <= 140 char chunks.
-                        if (cur_line.Length <= TWEET_LEN)
+                        // If line is <= 140 characters (with hashtag added) just output 
+                        // the line plus the hashtag. Otherwise, break up line into 
+                        // <= 140 chararacter chunks.
+                        if (cur_line.Length + 1 + kHashtag.Length <= TWEET_LEN)
                         {
                             line_count++;
-                            file.Add(cur_line);
+                            contents.Add(cur_line + " " + kHashtag);
                         }
                         else
                         {
@@ -88,23 +116,20 @@ namespace TweetyText
                             foreach (string line in lines)
                             {
                                 line_count++;
-                                file.Add(line);
+                                contents.Add(line);
                             }
                         }
                     }
-
                 }
-
             }
 
-            return file;
-
+            return (string[])contents.ToArray(typeof(string));
         }
 
         static void Main(string[] args)
         {
             TweetyText p = new TweetyText();
-            ArrayList lines = p.Process(@"C:\Temp\Data\handbook.txt");
+            string[] lines = p.Tweetify(@"C:\Temp\Data\handbook.txt");
             foreach (string line in lines)
             {
                 Console.WriteLine("{0}", line);
